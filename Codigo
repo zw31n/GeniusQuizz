@@ -1,0 +1,217 @@
+// C++ code
+//
+int sequencia[100];
+int tentativa[100]; 
+int jogadas = 0;
+int rodada = 0;
+bool jogador = false;
+int btn1 = 5, btn2 = 2, btn3 = 3, btn4 = 4;
+int led1 = 8, led2 = 9, led3 = 10, led4 = 11;
+int vlbtn1 = 0, vlbtn2 = 0, vlbtn3 = 0, vlbtn4 = 0;
+
+int som = 12;
+
+void setup()
+{
+  
+  Serial.begin(9600);
+  randomSeed(analogRead(0));
+  pinMode(btn1,INPUT);
+  pinMode(btn2,INPUT);
+  pinMode(btn3,INPUT);
+  pinMode(btn4,INPUT);
+
+  pinMode(led1,OUTPUT);
+  pinMode(led2,OUTPUT);
+  pinMode(led3,OUTPUT);
+  pinMode(led4,OUTPUT);
+  pinMode(som,OUTPUT);
+  tone(som,750,500);
+  BLINK();
+  noTone(som);
+}
+          
+void LED1(){
+      digitalWrite(led1,1);
+      tone(som,262,200);
+      delay(200);
+      noTone(som);
+      digitalWrite(led1,0);
+      delay(200); 
+          }
+          
+void LED2(){
+       digitalWrite(led2,1);
+       tone(som,294,200);
+      delay(200);
+       noTone(som);
+      digitalWrite(led2,0);
+       delay(200);
+          }
+void LED3(){
+       digitalWrite(led3,1);
+       tone(som,330,200);
+      delay(200);
+       noTone(som);
+      digitalWrite(led3,0);
+       delay(200);
+          }
+void LED4(){
+       digitalWrite(led4,1);
+       tone(som,349,200);
+      delay(200);
+       noTone(som);
+      digitalWrite(led4,0);
+       delay(200);
+          }
+void BLINK(){
+  for(int i = 0;i < 5;i++){
+      digitalWrite(8,1);
+     digitalWrite(9,1);
+     digitalWrite(10,1);
+     digitalWrite(11,1);
+     delay(200);
+    digitalWrite(8,0);
+     digitalWrite(9,0);
+     digitalWrite(10,0);
+     digitalWrite(11,0);
+    delay(200);
+  }
+          }
+void ganhou(){
+ tone(som,900,2000);
+   BLINK();
+  noTone(som);
+for(int i=0;i<100;i++){
+  sequencia[i] = 0;
+  tentativa[i] = 0;
+}
+rodada = 0;
+jogadas = 0;
+jogador = false;
+}
+
+void perdeu(){
+  tone(som,300,2000);
+   BLINK();
+  noTone(som);
+for(int i=0;i<100;i++){
+  sequencia[i] = 0;
+  tentativa[i] = 0;
+}
+rodada = 0;
+jogadas = 0;
+jogador = false;
+
+}
+
+void _jogada_(){
+
+  if(rodada < jogadas){
+    
+    if(vlbtn1 == 1){
+     LED1();
+      tentativa[rodada] = 0;
+      
+      if(tentativa[rodada] != sequencia[rodada]){
+        perdeu();
+      }
+      else{
+        rodada++;
+      }
+  }
+
+   else if(vlbtn2 == 1){
+     LED2();
+      tentativa[rodada] = 1;
+      
+      if(tentativa[rodada] != sequencia[rodada]){
+        perdeu();
+      }
+      else{
+        rodada++;
+      }
+  }
+
+       else if(vlbtn3 == 1){
+     LED3();
+      tentativa[rodada] = 2;
+      
+      if(tentativa[rodada] != sequencia[rodada]){
+        perdeu();
+      }
+      else{
+        rodada++;
+      }
+  } 
+
+  else if(vlbtn4 == 1){
+        LED4();
+      tentativa[rodada] = 3;
+      
+      if(tentativa[rodada] != sequencia[rodada]){
+        perdeu();
+      }
+      else{
+        rodada++;
+      }
+  } 
+  
+  }
+  else{
+    rodada = 0;
+    jogador = false;
+  }
+}
+
+void sorteio(){
+  for (int i = 0; i < jogadas;i++){
+    
+    delay(300);
+    if(sequencia[i] == 0){
+      LED1();
+    }
+    
+     else if(sequencia[i] == 1){
+    	LED2();
+    }
+    
+     else if(sequencia[i] == 2){
+     LED3();
+    }
+    
+     else if(sequencia[i] == 3){
+     LED4();
+    }
+    
+  }
+  
+  }
+
+void loop()
+{
+
+  vlbtn1 = digitalRead(btn1);
+  vlbtn2 = digitalRead(btn2);
+  vlbtn3 = digitalRead(btn3);
+  vlbtn4 = digitalRead(btn4);
+  int aleatorio = random(0,4);
+
+   if(jogadas < 10 && jogador == false){
+    sequencia[jogadas] = aleatorio;
+    jogadas++;
+    sorteio();
+    jogador = true;
+
+      }
+
+  else if(jogadas < 11 && jogador){
+    _jogada_();
+     Serial.println("SIM");
+  }
+
+   else{
+  ganhou();
+    }
+
+  }
